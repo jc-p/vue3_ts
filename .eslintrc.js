@@ -38,6 +38,8 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-var": "error",
     "prettier/prettier": "error",
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
     // 禁止出现console
     "no-console": "warn",
     // 禁用debugger
@@ -119,7 +121,7 @@ module.exports = {
     // 禁止出现多行空行
     "no-multiple-empty-lines": "warn",
     // 禁止出现;
-    semi: ["warn", "never"],
+    // semi: ["warn", "never"],
     // 强制在块之前使用一致的空格
     "space-before-blocks": "warn",
     // 强制在 function的左括号之前使用一致的空格
@@ -136,6 +138,7 @@ module.exports = {
     "switch-colon-spacing": "warn",
     // 强制箭头函数的箭头前后使用一致的空格
     "arrow-spacing": "warn",
+    // eslint-disable-next-line no-dupe-keys
     "no-var": "warn",
     "prefer-const": "warn",
     "prefer-rest-params": "warn",
