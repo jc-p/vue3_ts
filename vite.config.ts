@@ -2,17 +2,13 @@ import pkg from "./package.json";
 import dayjs from "dayjs";
 import { resolve } from "path";
 import { defineConfig, loadEnv } from "vite";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
-import vueLegacy from "@vitejs/plugin-legacy";
+import { createVitePlugins } from "./build/vite/plugin/index";
 import { createProxy } from "./build/vite/proxy";
 import { wrapperEnv } from "./build/utils";
 
-import viteCompression from "vite-plugin-compression";
-
-function pathResolve(dir: string) {
+const pathResolve = (dir: string) => {
   return resolve(__dirname, dir);
-}
+};
 
 const { dependencies, devDependencies, name, version } = pkg;
 const __APP_INFO__ = {
@@ -35,19 +31,6 @@ export default defineConfig(({ command, mode }) => {
 
   const config = {
     base: VITE_PUBLIC_PATH,
-    plugins: [
-      vue(),
-      vueJsx(),
-      vueLegacy(),
-      // gzip压缩 生产环境生成 .gz 文件
-      viteCompression({
-        verbose: true,
-        disable: false,
-        threshold: 10240,
-        algorithm: "gzip",
-        ext: ".gz",
-      }),
-    ],
 
     server: {
       host: "0.0.0.0",
@@ -82,12 +65,13 @@ export default defineConfig(({ command, mode }) => {
     define: {
       // setting vue-i18-next
       // Suppress warning
-      // __INTLIFY_PROD_DEVTOOLS__: false,
-      // __APP_INFO__: JSON.stringify(__APP_INFO__),
+      __INTLIFY_PROD_DEVTOOLS__: false,
+      __APP_INFO__: JSON.stringify(__APP_INFO__), //package.json
     },
     esbuild: {
       pure: VITE_DROP_CONSOLE ? ["console.log", "debugger"] : [],
     },
+    plugins: createVitePlugins(viteEnv, isBuild),
   };
 
   return config;

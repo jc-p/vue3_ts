@@ -1,21 +1,41 @@
-<script setup lang="ts">
-  // This starter template is using Vue 3 <script setup> SFCs
-  // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-  import HelloWorld from "./components/HelloWorld.vue";
+<script lang="ts">
+  import { defineComponent, ref } from "vue";
+  import { useTitle } from "@vueuse/core";
+  import { darkTheme } from "naive-ui";
+  import type { GlobalTheme } from "naive-ui";
+  import { NConfigProvider, NButton, NCard, NSpace } from "naive-ui";
+  import slider from "@/components/slider.vue";
+
+  export default defineComponent({
+    components: {
+      NConfigProvider,
+      NButton,
+      NSpace,
+      NCard,
+      slider,
+    },
+    setup() {
+      const title = useTitle("pppp");
+
+      return {
+        title,
+        darkTheme,
+        theme: ref<GlobalTheme | null>(null),
+      };
+    },
+  });
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/img/materials.png" />
-  <HelloWorld msg="Hello " />
+  <n-config-provider :theme="theme">
+    <n-card>
+      <n-space>
+        <slider />
+        <n-button @click="theme = darkTheme"> 深色 </n-button>
+        <n-button @click="theme = null"> 浅色 </n-button>
+      </n-space>
+    </n-card>
+  </n-config-provider>
 </template>
 
-<style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-  }
-</style>
+<style></style>

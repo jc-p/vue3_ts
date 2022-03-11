@@ -11,7 +11,6 @@ import { defineStore } from "pinia";
 import { store } from "@/store";
 
 import { ThemeEnum } from "@/enums/appEnum";
-import { APP_DARK_MODE_KEY_, PROJ_CFG_KEY } from "@/enums/cacheEnum";
 import { resetRouter } from "@/router";
 import { merge } from "lodash-es";
 

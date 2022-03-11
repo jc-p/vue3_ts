@@ -3,26 +3,16 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import legacy from "@vitejs/plugin-legacy";
 import purgeIcons from "vite-plugin-purge-icons";
 // import windiCSS from "vite-plugin-windicss";
-// import VitePluginCertificate from "vite-plugin-mkcert";
 import vueSetupExtend from "vite-plugin-vue-setup-extend";
-import { configHtmlPlugin } from "./html";
-import { configPwaConfig } from "./pwa";
+import Components from "unplugin-vue-components/vite";
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import { configMockPlugin } from "./mock";
 import { configCompressPlugin } from "./compress";
-import { configStyleImportPlugin } from "./styleImport";
-import { configVisualizerConfig } from "./visualizer";
 import { configThemePlugin } from "./theme";
 import { configImageminPlugin } from "./imagemin";
-import { configSvgIconsPlugin } from "./svgSprite";
 
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
-  const {
-    VITE_USE_IMAGEMIN,
-    VITE_USE_MOCK,
-    VITE_LEGACY,
-    VITE_BUILD_COMPRESS,
-    VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE,
-  } = viteEnv;
+  const { VITE_USE_IMAGEMIN, VITE_USE_MOCK, VITE_LEGACY, VITE_BUILD_COMPRESS } = viteEnv;
 
   const vitePlugins = [
     // have to
@@ -31,9 +21,10 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     vueJsx(),
     // support name
     vueSetupExtend(),
-    // VitePluginCertificate({ //生产证书
-    //   source: "coding",
-    // }),
+
+    Components({
+      resolvers: [NaiveUiResolver()], // setup 模式使用unplugin-vue-components 插件来按需自动加载组件
+    }),
   ];
 
   // vite-plugin-windicss
@@ -42,23 +33,11 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   // @vitejs/plugin-legacy
   VITE_LEGACY && isBuild && vitePlugins.push(legacy());
 
-  // vite-plugin-html
-  // vitePlugins.push(configHtmlPlugin(viteEnv, isBuild));
-
-  // vite-plugin-svg-icons
-  vitePlugins.push(configSvgIconsPlugin(isBuild));
-
   // vite-plugin-mock
   VITE_USE_MOCK && vitePlugins.push(configMockPlugin(isBuild));
 
   // vite-plugin-purge-icons
   vitePlugins.push(purgeIcons());
-
-  // vite-plugin-style-import
-  vitePlugins.push(configStyleImportPlugin(isBuild));
-
-  // rollup-plugin-visualizer
-  // vitePlugins.push(configVisualizerConfig());
 
   // vite-plugin-theme
   // vitePlugins.push(configThemePlugin(isBuild));
@@ -69,12 +48,7 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     VITE_USE_IMAGEMIN && vitePlugins.push(configImageminPlugin());
 
     // rollup-plugin-gzip
-    // vitePlugins.push(
-    //   configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE),
-    // );
-
-    // vite-plugin-pwa
-    // vitePlugins.push(configPwaConfig(viteEnv));
+    vitePlugins.push(configCompressPlugin(VITE_BUILD_COMPRESS));
   }
 
   return vitePlugins;
